@@ -1,26 +1,6 @@
-// // src/services/githubService.js
-// import axios from 'axios';
-// import api from './api';
-// export const getUserRepos = () => {
-//   return api.get('/api/github/repos'); // Your backend should proxy this to GitHub API
-// };
-
-// // src/services/githubService.js
-// export const getRepoFiles = (owner, repo, branch = 'main') => {
-//   return api.get(`/api/github/files/${owner}/${repo}/${branch}`);
-// };
 
 
 
-// export const getPublicRepos = (username) => {
-//   return api.get(`/api/github/public-repos/${username}`);
-// };
-
-
-
-
-
-import axios from 'axios';
 import api from './api';
 
 // 🔐 Helper to get Authorization header
