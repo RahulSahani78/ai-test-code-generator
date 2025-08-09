@@ -128,6 +128,7 @@ if (error)
                     title="Browse files in this repository"
                     onClick={() => {
                       onRepoSelect(repo);
+                      localStorage.setItem('selectedRepo', JSON.stringify(repo)); 
                       navigate('/select-files');
                     }}
                   >
