@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 
 app.use('/api/github', githubRoutes);
 app.use('/api/ai', aiRoutes);
-app.use('/api/github', prRoutes);
+app.use('/api/pr', prRoutes);
 app.use('/auth', authRoutes);
 
 app.get('/', (req, res) => {
