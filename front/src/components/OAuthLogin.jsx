@@ -2,8 +2,9 @@ import React from 'react';
 
 const OAuthLogin = () => {
   const handleLogin = () => {
-    window.location.href = 'http://localhost:5000/auth/github';
+    window.location.href = `${process.env.REACT_APP_BACKEND_URL}/auth/github`;
   };
+
 
   return (
     <div className="container mt-5">
