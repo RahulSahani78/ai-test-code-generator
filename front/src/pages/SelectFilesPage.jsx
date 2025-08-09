@@ -313,6 +313,7 @@ function SelectFilesPage({ selectedRepo: propSelectedRepo }) {
   };
 
   const handleProceed = () => {
+    localStorage.setItem('selectedFiles', JSON.stringify(selectedFiles)); 
     navigate('/summaries', { state: { selectedFiles, selectedRepo } });
   };
 
