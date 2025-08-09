@@ -4,7 +4,7 @@ const router = express.Router();
 
 const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-const FRONTEND_URL = 'ai-test-code-generator.vercel.app/'; // change if deployed
+const FRONTEND_URL = 'https://ai-test-code-generator.vercel.app'; // change if deployed
 
 // Step 1: Redirect user to GitHub login
 // router.get('/github', (req, res) => {
