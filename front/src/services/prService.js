@@ -3,5 +3,5 @@ import api from './api';
 
 
 export const createPullRequest = (data) => {
-  return api.post('/api/github/create-pr', data);
+  return api.post('/api/pr/create-pr', data);
 };
