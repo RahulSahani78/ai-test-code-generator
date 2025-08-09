@@ -7,8 +7,14 @@ const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const FRONTEND_URL = 'https://ai-test-code-generator-frontend.onrender.com'; // change if deployed
 
 // Step 1: Redirect user to GitHub login
+// router.get('/github', (req, res) => {
+//   const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+//   res.redirect(redirectUrl);
+// });
+
 router.get('/github', (req, res) => {
-  const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo`;
+  const redirectUri = encodeURIComponent('https://ai-test-code-gen-backened.onrender.com/auth/github/callback');
+  const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo&redirect_uri=${redirectUri}`;
   res.redirect(redirectUrl);
 });
 
