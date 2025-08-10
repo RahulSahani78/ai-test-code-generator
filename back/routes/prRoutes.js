@@ -181,7 +181,6 @@
 
 
 
-
 const express = require("express");
 const axios = require("axios");
 const router = express.Router();
@@ -195,10 +194,8 @@ const githubApi = axios.create({
   },
 });
 
-// Helper: delay function
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Helper: retry wrapper
 async function retryOperation(fn, retries = 3, delayMs = 1500) {
   let lastError;
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -216,7 +213,7 @@ async function retryOperation(fn, retries = 3, delayMs = 1500) {
 }
 
 router.post("/create-pr", async (req, res) => {
-  console.log("Received data:", req.body);
+  console.log("📩 Received data:", req.body);
   const { owner, repo, branch, filePath, code, commitMessage } = req.body;
 
   if (!owner || !repo || !filePath || !code || !commitMessage) {
@@ -226,27 +223,27 @@ router.post("/create-pr", async (req, res) => {
   const newBranch = `test-gen-${Date.now()}`;
 
   try {
-    // Step 1: Get commit SHA of base branch
+    // Step 1: Base branch commit SHA
     const refRes = await githubApi.get(`/repos/${owner}/${repo}/git/ref/heads/${branch}`);
     const baseSha = refRes.data.object.sha;
 
-    // Step 2: Create new branch from base branch
+    // Step 2: Create new branch
     await githubApi.post(`/repos/${owner}/${repo}/git/refs`, {
       ref: `refs/heads/${newBranch}`,
       sha: baseSha,
     });
 
-    // Step 3: Create blob for the new file
+    // Step 3: Create blob
     const blobRes = await githubApi.post(`/repos/${owner}/${repo}/git/blobs`, {
-      content: Buffer.from(code).toString("base64"),
+      content: Buffer.from(code, "utf8").toString("base64"),
       encoding: "base64",
     });
 
-    // Step 4: Get tree SHA from base commit
+    // Step 4: Get base tree SHA
     const commitRes = await githubApi.get(`/repos/${owner}/${repo}/git/commits/${baseSha}`);
     const baseTreeSha = commitRes.data.tree.sha;
 
-    // Step 5: Create new tree
+    // Step 5: Create tree
     const newTreeRes = await githubApi.post(`/repos/${owner}/${repo}/git/trees`, {
       base_tree: baseTreeSha,
       tree: [
@@ -259,19 +256,19 @@ router.post("/create-pr", async (req, res) => {
       ],
     });
 
-    // Step 6: Create new commit
+    // Step 6: Create commit
     const commitNewRes = await githubApi.post(`/repos/${owner}/${repo}/git/commits`, {
       message: commitMessage,
       tree: newTreeRes.data.sha,
       parents: [baseSha],
     });
 
-    // Step 7: Point new branch to new commit
+    // Step 7: Point branch to commit
     await githubApi.patch(`/repos/${owner}/${repo}/git/refs/heads/${newBranch}`, {
       sha: commitNewRes.data.sha,
     });
 
-    // Step 8: Create Pull Request with retry logic
+    // Step 8: Create PR with retry
     const prRes = await retryOperation(() =>
       githubApi.post(`/repos/${owner}/${repo}/pulls`, {
         title: commitMessage,
@@ -283,7 +280,7 @@ router.post("/create-pr", async (req, res) => {
 
     res.json({ pullRequestUrl: prRes.data.html_url });
   } catch (err) {
-    console.error("Error creating PR:", err.response?.data || err.message);
+    console.error("❌ Error creating PR:", err.response?.data || err.message);
     res.status(500).json({
       message: "Failed to create PR",
       error: err.response?.data || err.message,
